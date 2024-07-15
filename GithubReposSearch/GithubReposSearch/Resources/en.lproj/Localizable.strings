@@ -1,0 +1,8 @@
+"search_prompt" = "Please start typing in the search bar.";
+"search_minimum_characters" = "Minimum 3 characters.";
+"loading" = "Loading...";
+"important_message" = "Important message";
+"ok" = "OK";
+"open_in_browser" = "Open in Browser";
+"stars" = "⭐️ %@";
+"issues" = "Issues: %@";
