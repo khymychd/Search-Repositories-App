@@ -22,6 +22,11 @@ class RepositorySearchViewModel: ObservableObject {
     private var currentPage: Int = 1
     private var totalCount: Int = 0
     
+    var hasMorePages: Bool {
+        let totalPages = totalCount / numberOfElementsPerPage
+        return currentPage < totalPages
+    }
+    
     let apiClient: GithubApiClient
     let coordinator: AppCoordinator
     
@@ -74,7 +79,7 @@ class RepositorySearchViewModel: ObservableObject {
     }
     
     func loadMoreIfCan() {
-        guard repositories.count < totalCount else {
+        guard hasMorePages else {
             return
         }
         currentPage += 1

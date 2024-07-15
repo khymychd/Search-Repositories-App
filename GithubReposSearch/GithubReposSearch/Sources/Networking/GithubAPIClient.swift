@@ -32,7 +32,6 @@ class GithubApiClient {
         numberElementsPerPage: Int,
         currentPage: Int
     ) async -> Result<GithubSearchResult, APIError> {
-        
         let endPoint: GithubSearchEndPoint = .fetchRepositories(
             token: token,
             query: query,

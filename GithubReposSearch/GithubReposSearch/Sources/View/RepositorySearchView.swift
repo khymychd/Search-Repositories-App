@@ -22,7 +22,7 @@ struct RepositorySearchView: View {
                     viewModel.handleSelectRepo(repository)
                 }
             }
-            if !viewModel.repositories.isEmpty {
+            if !viewModel.repositories.isEmpty, viewModel.hasMorePages {
                 Text("Loading...").onAppear(perform: { viewModel.loadMoreIfCan() })
             }
         }
@@ -37,7 +37,7 @@ struct RepositorySearchView: View {
                 .padding()
             }
         })
-        .alert("Important message", isPresented: $viewModel.shouldDisplayAlert) {
+        .alert("API Rate Limit Exceeded", isPresented: $viewModel.shouldDisplayAlert) {
                     Button("OK", role: .cancel) { }
                 }
         .searchable(text: $viewModel.query)
