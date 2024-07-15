@@ -6,3 +6,4 @@
 "open_in_browser" = "Open in Browser";
 "stars" = "⭐️ %@";
 "issues" = "Issues: %@";
+"search_alert_message" = "API Rate Limit Exceeded";
