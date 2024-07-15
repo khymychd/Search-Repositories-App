@@ -4,6 +4,8 @@
 "important_message" = "Important message";
 "ok" = "OK";
 "open_in_browser" = "Open in Browser";
-"stars" = "⭐️ %@";
-"issues" = "Issues: %@";
+"stars" = "⭐️";
+"issues" = "Issues:";
 "search_alert_message" = "API Rate Limit Exceeded";
+"repository_detail_language" = "Language";
+"repository_detail_created_at" =  "Created At";

@@ -4,7 +4,7 @@ import SwiftUI
 /// A view for displaying the details of a GitHub repository.
 struct RepositoryDetailsView: View {
     
-    let repository: GithubRepository
+    let repository: GitHubRepository
     
     @Environment(\.openURL) var openURL
     
@@ -20,35 +20,53 @@ struct RepositoryDetailsView: View {
             VStack(spacing: stackSpacing) {
                 Text(repository.fullName)
                     .font(.largeTitle)
+                    .fontWeight(.bold)
                     .lineLimit(lineLimit)
                     .minimumScaleFactor(minimumScaleFactor)
                     .padding(.bottom, bottomPadding)
                 
-                Text(repository.description ?? "")
-                    .font(.title2)
-                
-                HStack {
-                    Text("stars".localized(with: "\(repository.stargazersCount)"))
-                    Spacer()
-                    Text("issues".localized(with: "\(repository.openIssuesCount)"))
+                if let description = repository.description, !description.isEmpty {
+                    Text(description)
+                        .font(.title2)
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, bottomPadding)
                 }
                 
                 HStack {
-                    Text(repository.language ?? "")
+                    InfoItemView(title: "stars".localized, value: "\(repository.stargazersCount)")
                     Spacer()
-                    Text(repository.createdAt, style: .date)
+                    InfoItemView(title: "issues".localized, value: "\(repository.openIssuesCount)")
                 }
+                .padding(.bottom, stackSpacing)
+                
+                HStack {
+                    if let language = repository.language, !language.isEmpty {
+                        InfoItemView(title: "Language", value: language)
+                    }
+                    Spacer()
+                    DateInfoItemView(title: "Created At", value: repository.createdAt)
+                }
+                .padding(.bottom, stackSpacing)
                 
                 if let url = URL(string: repository.htmlUrl) {
                     Button(action: {
                         openURL(url)
-                    }, label: {
+                    }) {
                         Text("open_in_browser".localized)
+                            .font(.headline)
+                            .foregroundColor(.white)
                             .padding(buttonPadding)
-                    })
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
                 }
             }
             .padding(viewPadding)
+            .background(Color(UIColor.systemBackground))
+            .cornerRadius(15)
+            .shadow(radius: 10)
+            .padding()
         }
     }
 }

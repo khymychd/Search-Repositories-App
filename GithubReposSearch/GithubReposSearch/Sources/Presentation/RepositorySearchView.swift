@@ -5,28 +5,43 @@ struct RepositorySearchView: View {
     
     @ObservedObject var viewModel: RepositorySearchViewModel
     
+    private let lineLimit: Int = 1
+    private let minimumScaleFactor: CGFloat = 0.5
+    private let cornerRadius: Double = 16
+    private let shadowRadius: Double = 6
+    
     var body: some View {
-        List {
-            ForEach(viewModel.repositories, id: \.id) { repository in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Group {
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.repositories, id: \.id) { repository in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            
                             Text(repository.fullName)
+                                .font(.headline)
+                                .minimumScaleFactor(minimumScaleFactor)
                             Text(repository.description ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
-                        .lineLimit(1)
+                        .lineLimit(lineLimit)
+                        Spacer()
+                        InfoItemView(title: "stars".localized, value: "\(repository.stargazersCount)")
                     }
-                    Spacer()
-                    Text("stars".localized(with: "\(repository.stargazersCount)"))
+                    .padding()
+                    .background(Color(UIColor.systemBackground))
+                    .cornerRadius(cornerRadius)
+                    .shadow(radius: shadowRadius)
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 4)
+                    .onTapGesture {
+                        viewModel.handleSelectRepo(repository)
+                    }
                 }
-                .onTapGesture {
-                    viewModel.handleSelectRepo(repository)
+                if !viewModel.repositories.isEmpty, viewModel.hasMorePages {
+                    Text("loading".localized)
+                        .onAppear(perform: { viewModel.loadMoreIfCan() })
                 }
-            }
-            
-            if !viewModel.repositories.isEmpty, viewModel.hasMorePages {
-                Text("loading".localized)
-                    .onAppear(perform: { viewModel.loadMoreIfCan() })
             }
         }
         .background(content: {
@@ -44,7 +59,6 @@ struct RepositorySearchView: View {
             Button("ok".localized, role: .cancel) { }
         }
         .searchable(text: $viewModel.query)
-        .listStyle(PlainListStyle())
         .task {
             viewModel.subscribeOnQueryChanges()
         }

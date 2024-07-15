@@ -6,7 +6,7 @@ class RepositorySearchViewModel: ObservableObject {
     
     /// A struct representing the dependencies required by the view model.
     struct Dependencies {
-        let apiClient: GithubApiClient
+        let apiClient: GitHubApiClient
         let coordinator: AppCoordinator
     }
     
@@ -14,7 +14,7 @@ class RepositorySearchViewModel: ObservableObject {
     @Published var query: String = ""
     
     /// The list of repositories matching the search query.
-    @Published var repositories: [GithubRepository] = []
+    @Published var repositories: [GitHubRepository] = []
     
     /// A flag indicating whether an alert should be displayed.
     @Published var shouldDisplayAlert: Bool = false
@@ -38,7 +38,7 @@ class RepositorySearchViewModel: ObservableObject {
     private var totalCount: Int = 0
     
     /// The API client for interacting with the GitHub API.
-    let apiClient: GithubApiClient
+    let apiClient: GitHubApiClient
     
     /// The coordinator for handling navigation.
     let coordinator: AppCoordinator
@@ -51,15 +51,20 @@ class RepositorySearchViewModel: ObservableObject {
         self.coordinator = dependency.coordinator
     }
     
+    /// Cancels the current task when the view model is deinitialized.
+    deinit {
+        currentTask?.cancel()
+    }
+    
     ///
     var hasMorePages: Bool {
         let totalPages = totalCount / numberOfElementsPerPage
         return currentPage < totalPages
     }
     
-    /// Cancels the current task when the view model is deinitialized.
-    deinit {
-        currentTask?.cancel()
+    /// 
+    var isQueryValid: Bool {
+        query.count >= 3
     }
     
     /// Subscribes to changes in the search query and handles search logic.
@@ -80,7 +85,7 @@ class RepositorySearchViewModel: ObservableObject {
                     }
                     return
                 }
-                guard searchQuery.count >= 3 else {
+                guard isQueryValid else {
                     return
                 }
                 self.currentTask = Task { @MainActor in
@@ -103,7 +108,7 @@ class RepositorySearchViewModel: ObservableObject {
     
     /// Loads more repositories if there are more to load.
     func loadMoreIfCan() {
-        guard repositories.count < totalCount else {
+        guard hasMorePages else {
             return
         }
         currentPage += 1
@@ -127,7 +132,7 @@ class RepositorySearchViewModel: ObservableObject {
     /// Handles the selection of a repository.
     ///
     /// - Parameter repository: The selected repository.
-    func handleSelectRepo(_ repository: GithubRepository) {
+    func handleSelectRepo(_ repository: GitHubRepository) {
         coordinator.display(screen: .repositoryDetail(for: repository))
     }
     

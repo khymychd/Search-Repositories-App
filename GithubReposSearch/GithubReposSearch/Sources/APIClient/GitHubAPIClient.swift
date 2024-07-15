@@ -1,8 +1,7 @@
 import Foundation
 
-
 /// A client for interacting with the GitHub API.
-open class GithubApiClient {
+class GitHubApiClient {
     
     // MARK: - Properties
     /// The base URL for the GitHub API.
@@ -12,11 +11,11 @@ open class GithubApiClient {
     internal var token: String!
     
     /// A lazy-loaded dispatcher for handling search-related network requests.
-    lazy var searchDispatcher: NetworkDispatcher<GithubSearchEndPoint> = {
+    lazy var searchDispatcher: NetworkDispatcher<GitHubSearchEndPoint> = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .iso8601
-        let result: NetworkDispatcher<GithubSearchEndPoint> = .init(
+        let result: NetworkDispatcher<GitHubSearchEndPoint> = .init(
             session: .shared,
             baseURL: baseURL,
             decoder: decoder
@@ -26,11 +25,11 @@ open class GithubApiClient {
     
     // MARK: - Initializer
     
-    /// Initializes a new instance of `GithubApiClient`.
+    /// Initializes a new instance of `GitHubApiClient`.
     ///
     /// - Parameters:
-    ///   - baseURL: The base URL for the GitHub API. Defaults to "https://api.github.com".
-    public init( baseURL: URL = URL(string: "https://api.github.com")!) {
+    ///   - baseURL: The base URL for the GitHub API. Defaults to "https://api.GitHub.com".
+    public init( baseURL: URL = URL(string: "https://api.GitHub.com")!) {
         self.baseURL = baseURL
         getApiToken() // Retrieve the API token during initialization
     }
@@ -44,13 +43,13 @@ open class GithubApiClient {
     ///   - numberElementsPerPage: The number of elements per page.
     ///   - currentPage: The current page number.
     /// - Returns: A result containing either the search result or an API error.
-    internal func findRepositories(
+    func findRepositories(
         by query: String,
         numberElementsPerPage: Int,
         currentPage: Int
-    ) async -> Result<GithubSearchResult, APIError> {
+    ) async -> Result<GitHubSearchResult, APIError> {
         
-        let endPoint: GithubSearchEndPoint = .fetchRepositories(
+        let endPoint: GitHubSearchEndPoint = .fetchRepositories(
             token: token,
             query: query,
             numberElementsPerPage: numberElementsPerPage,
